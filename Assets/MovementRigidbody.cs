@@ -9,6 +9,7 @@ public class MovementRigidbody : NetworkBehaviour
 
     private Rigidbody rb;
     private FollowTarget cameraFollow;
+    private Animator anim;
     float forward = 0;
     float strafe = 0;
     float up = 0;
@@ -25,6 +26,7 @@ public class MovementRigidbody : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         cameraFollow = Camera.main.gameObject.GetComponent<FollowTarget>();
         cameraFollow.target = transform;
+        anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -37,7 +39,8 @@ public class MovementRigidbody : NetworkBehaviour
         strafe = Input.GetAxis("Horizontal");
         up = Input.GetAxis("Jump");
         cameraRot = Input.GetAxis("Mouse X");
-        cameraFollow.cameraHeight = 2.0f + ((Input.GetAxis("Mouse Y") + 1.0f) / 2.0f) * 10.0f;
+        cameraFollow.cameraHeight = Mathf.Clamp(cameraFollow.cameraHeight + Input.GetAxis("Mouse Y"), 0.0f, 20.0f);
+        
     }
 
     void FixedUpdate()
@@ -45,18 +48,29 @@ public class MovementRigidbody : NetworkBehaviour
         if(!isLocalPlayer)
             return;
 
-        transform.Rotate(0, cameraRot * 10.0f, 0);   
-        if(Mathf.Abs(forward) > ZERO_THRESHOLD)
+        transform.Rotate(0, cameraRot * 20.0f, 0);   
+        if(Mathf.Abs(forward) > ZERO_THRESHOLD && Mathf.Abs(Vector3.Dot(rb.velocity, transform.forward)) < 50.0f )
         {
             rb.AddForce(forward * transform.forward, ForceMode.Impulse);
         }
-        if(Mathf.Abs(strafe) > ZERO_THRESHOLD)
+        if(Mathf.Abs(strafe) > ZERO_THRESHOLD && Mathf.Abs(Vector3.Dot(rb.velocity, transform.right)) < 50.0f)
         {
             rb.AddForce(strafe * transform.right, ForceMode.Impulse);
         }
-        if(Mathf.Abs(up) > ZERO_THRESHOLD)
+        if(Mathf.Abs(up) > ZERO_THRESHOLD && Vector3.Dot(rb.velocity, Vector3.up) < 10.0f)
         {
             rb.AddForce(up * transform.up, ForceMode.Impulse);
         }
+        rb.velocity.Scale(new Vector3(0.97f, 1.0f, 0.97f));
+
+        if((new Vector3(rb.velocity.x, 0, rb.velocity.z)).magnitude > 10.0f)
+        {
+            anim.speed = 1.0f;
+        }
+        else
+        {
+            anim.speed = 0.0f;
+        }
+
     }
 }
