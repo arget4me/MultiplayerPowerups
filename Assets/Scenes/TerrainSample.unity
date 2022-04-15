@@ -255,7 +255,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  minDistance: 10
+  minDistance: 30
+  cameraHeight: 5
+  CameraAcc: 5
 --- !u!1 &641715524
 GameObject:
   m_ObjectHideFlags: 0
