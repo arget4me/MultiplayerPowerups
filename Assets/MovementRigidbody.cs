@@ -39,7 +39,8 @@ public class MovementRigidbody : NetworkBehaviour
         strafe = Input.GetAxis("Horizontal");
         up = Input.GetAxis("Jump");
         cameraRot = Input.GetAxis("Mouse X");
-        cameraFollow.cameraHeight += Input.GetAxis("Mouse Y");
+        cameraFollow.cameraHeight = Mathf.Clamp(cameraFollow.cameraHeight + Input.GetAxis("Mouse Y"), 0.0f, 20.0f);
+        
     }
 
     void FixedUpdate()

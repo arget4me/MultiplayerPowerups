@@ -23,7 +23,7 @@ public class FollowTarget : MonoBehaviour
         if(!target)
             return;
 
-        transform.position = Vector3.Lerp(transform.position, target.transform.position - minDistance * target.transform.forward + Vector3.up * Mathf.Clamp(cameraHeight, 0.0f, 20.0f), Time.deltaTime * CameraAcc);
+        transform.position = Vector3.Lerp(transform.position, target.transform.position - minDistance * target.transform.forward + Vector3.up * cameraHeight, Time.deltaTime * CameraAcc);
         transform.LookAt(target.transform, Vector3.up);
     }
 }
